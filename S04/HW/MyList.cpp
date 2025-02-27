@@ -6,11 +6,13 @@ class MyList
 {
     public:
         int m_size;
+        int m_capacity;
         int* m_pnums;
 
     MyList(int size, int* nums):m_size(size)
     {
-        m_pnums = (int*)malloc(sizeof(int)*size);
+        m_capacity = size;
+        m_pnums = (int*)malloc(sizeof(int)*m_capacity);
         int i;
         for(i=0; i<m_size; i++)
         {
@@ -29,6 +31,9 @@ class MyList
                 cout << m_pnums[i]<<",";
         }
         cout <<"}"<<endl;
+
+
+        cout << "capacity: "<< m_capacity << "  size: "<< m_size << "\n"<< endl;
     }
 
 
@@ -56,10 +61,25 @@ class MyList
         return count;
     }
 
+    void erase(int pos)
+    {
+        if(pos < m_size)
+        {
+            for (int i = pos; i < m_size-1; i++)
+            {
+                m_pnums[i] = m_pnums[i+1];
+            }
+            m_size--;
+        }
+    }
+
     private:
         void resize(int newsize)
         {
-            int* newMem = (int*)malloc(sizeof(int)*newsize);
+            if(newsize > m_capacity)
+                m_capacity *= 2;
+
+            int* newMem = (int*)malloc(sizeof(int)*m_capacity);
             for(int i=0; i<m_size; i++)
             {
                 newMem[i] = m_pnums[i];
@@ -83,9 +103,14 @@ int main()
     m.pop();
     m.Print_List();
 
-    m.append(2);
-    m.append(2);
+    for (int i = 0; i < 5; i++)
+    {
+        m.append(2);
+    }
     m.Print_List();
 
-    cout<<m.Count(2)<<endl;
+    cout<< "Count: " <<m.Count(2)<<endl;
+
+    m.erase(4);
+    m.Print_List();
 }
